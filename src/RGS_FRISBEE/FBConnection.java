@@ -9,6 +9,7 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 
@@ -82,10 +83,11 @@ public class FBConnection extends ConnectionInterfaceImp {
 
         if (p_objects.length > 0 ) {
 //new StringEntity(((String) p_objects[0]));
-            HttpEntity reqEntity = EntityBuilder.create().setText((String) p_objects[0])
-                    .setContentType(ContentType.create("text/xml", "utf-8"))
-                    .build();
-                    //StringEntity((String) p_objects[0], "text/xml", "utf-8");//EntityBuilder.create()
+            HttpEntity reqEntity = new BasicHttpEntity();
+//                    EntityBuilder.create().setText((String) p_objects[0])
+//                    .setContentType(ContentType.create("text/xml", "utf-8"))
+//                    .build();
+                    new StringEntity((String) p_objects[0], ContentType.create("text/xml","utf-8"));//EntityBuilder.create()
 //                    .setStream(((Clob) p_objects[0]).getAsciiStream()).build();
                     //.setContentType(ContentType.TEXT_XML)
                     //.setText(((String) p_objects[0])).build();

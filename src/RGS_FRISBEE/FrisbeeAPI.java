@@ -68,7 +68,7 @@ public class FrisbeeAPI {
         return clobResponse;
     }
 
-    public static String SendRequest(String request) throws Exception {
+    public static String SendRequest(String request){
         String Response = "";
 //        String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
 //                "<Request xmlns:xsi=\"http://www.w3.org/2001/XMLSchemainstance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"GetDirectoryRequest\" S\n" +
