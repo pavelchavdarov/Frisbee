@@ -5,6 +5,7 @@ import RGS_COMMON_UTILS.String4CFT;
 import static RGS_COMMON_UTILS.oraDAO.CreateClob;
 
 import java.io.BufferedReader;
+import java.io.Reader;
 import java.sql.Clob;
 
 
@@ -35,6 +36,15 @@ public class FrisbeeAPI {
 //        bw.flush();
 //        return result;
 //    }
+    private static void Init(){
+        if(FBconn == null) {
+            FBconn = new FBConnection();
+            FBconn.initConnection();
+            FBconn.setTarget("37.230.211.37", 3056, "https");
+            FBconn.setProxy("10.95.17.46", 8080, "http");
+        }
+    }
+
 
     public static Clob SendRequest(Clob request) throws Exception {
         Clob clobResponse = null;
@@ -44,15 +54,9 @@ public class FrisbeeAPI {
         try {
             FBconn = new FBConnection();
 
-            BufferedReader br = (BufferedReader) request.getCharacterStream();
-            while(br.read(cbuf) != -1){
-                strRequest.concat(String.valueOf(cbuf));
-            }
-            br.close();
-            FBconn.sendData(strRequest);
-            strResponse = FBconn.getData();
-            clobResponse = CreateClob(strResponse);
+            clobResponse = FBconn.POST_RequestDBClob("/", request);
         }catch(Exception e){
+            e.printStackTrace();
             strResponse = String4CFT.setPar(strResponse,"error", e.getMessage());
             if (strResponse.length()>=1000)
                 strResponse = strResponse.substring(0, 1000);
@@ -67,20 +71,20 @@ public class FrisbeeAPI {
 
     public static String SendRequest(String request) throws Exception {
         String Response = "";
+//        String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+//                "<Request xmlns:xsi=\"http://www.w3.org/2001/XMLSchemainstance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"GetDirectoryRequest\" S\n" +
+//                "ervicesDetalization=\"4\" IncludeRegions=\"true\" IncludeServiceTypes=\"true\" IncludeContrac\n" +
+//                "ts=\"true\" IncludeOperators=\"true\" IncludeCurrencies=\"true\" IncludeNominals=\"true\" xmlns\n" +
+//                "=\"http://ekassir.com/eKassir/PaySystem/Server/eKassirV3Protocol\" />";
 //        char[] cbuf = new char[1];
 //        String strRequest = "";
 //        String strResponse = "";
         try {
-            FBconn = new FBConnection();
-
-            FBconn.sendData(request);
-            Response = FBconn.getData();
+            Init();
+            Response = FBconn.POST_Request("/", request);
         }catch(Exception e){
             Response = String4CFT.setPar(Response,"error", e.getMessage());
-            if (Response.length()>=1000)
-                Response = Response.substring(0, 1000);
-            else
-                Response = String.format("%-1000s", Response);
+            e.printStackTrace();
         }
 
         return Response;
