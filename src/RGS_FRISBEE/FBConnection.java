@@ -29,6 +29,10 @@ import java.sql.SQLException;
 
 public class FBConnection extends ConnectionInterfaceImp {
 
+    public FBConnection() {
+        initConnection();
+    }
+
     private Clob responceToClob(CloseableHttpResponse response) throws IOException, SQLException  {
         char[] cbuf = new char[1];
         oracle.jdbc.OracleConnection oraConn =

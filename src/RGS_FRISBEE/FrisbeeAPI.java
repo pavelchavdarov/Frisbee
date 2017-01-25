@@ -19,7 +19,7 @@ public class FrisbeeAPI {
     private static ConnectionInterface FBconn;
 
 //    private static Clob CreateClob(String source) throws Exception{
-//        //resStr= String4CFT.setPar(resStr,"state: ", source);
+//        //resStr= RGS_COMMON_UTILS.String4CFT.setPar(resStr,"state: ", source);
 //        //source = String.format("%-1000s", source);
 //
 //        char[] cbuf = source.toCharArray();
@@ -39,9 +39,8 @@ public class FrisbeeAPI {
     private static void Init(){
         if(FBconn == null) {
             FBconn = new FBConnection();
-            FBconn.initConnection();
             FBconn.setTarget("37.230.211.37", 3056, "https");
-            FBconn.setProxy("10.95.17.46", 8080, "http");
+            //FBconn.setProxy("10.95.17.46", 8080, "http");
         }
     }
 
