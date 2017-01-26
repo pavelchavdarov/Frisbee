@@ -19,6 +19,6 @@ public class APITest {
                             "IncludeNominals=\"true\" " +
                             "xmlns =\"http://ekassir.com/eKassir/PaySystem/Server/eKassirV3Protocol\" />";
 
-        FrisbeeAPI.SendRequest(xml);
+        System.out.println(FrisbeeAPI.SendRequest(xml));
     }
 }

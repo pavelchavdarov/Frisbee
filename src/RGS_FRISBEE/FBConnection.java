@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import javax.net.ssl.*;
 import java.io.*;
@@ -29,6 +30,14 @@ import java.sql.SQLException;
 
 
 public class FBConnection extends ConnectionInterfaceImp {
+
+    public void initConnection() {
+        this.httpClient = HttpClientBuilder.create().disableRedirectHandling().build();
+
+        System.setProperty ("javax.net.ssl.trustStore", "C:\\Program Files\\Java\\jdk1.6.0_43\\jre\\lib\\security\\cacerts");
+        System.setProperty ("javax.net.ssl.trustStoreType", "jks");
+        System.setProperty ("javax.net.ssl.trustStorePassword", "changeit");
+    }
 
     public FBConnection() {
         initConnection();
