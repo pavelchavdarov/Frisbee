@@ -1,5 +1,6 @@
 package RGS_COMMON_UTILS;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
@@ -27,12 +28,12 @@ public class ConnectionInterfaceImp implements ConnectionInterface{
 
     protected String responceToString(CloseableHttpResponse response) throws IOException{
         String result = "";
+        Header[] headers = response.getAllHeaders();
         char[] cbuf = new char[1];
-
         try{
             HttpEntity resEntity = response.getEntity();
             if (resEntity  != null){
-                InputStreamReader inStream = new InputStreamReader(resEntity.getContent());
+                InputStreamReader inStream = new InputStreamReader(resEntity.getContent(),"windows-1251");
                 BufferedReader br = new BufferedReader(inStream);
                 while(br.read(cbuf) != -1){
                     result+=String.valueOf(cbuf);

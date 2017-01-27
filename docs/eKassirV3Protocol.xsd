@@ -1417,14 +1417,14 @@
 							</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-          <xs:element name="LimitsDirectoryOptions" type="AmountLimitsDirectoryOptions" minOccurs="0" form="qualified">
-            <xs:annotation>
-              <xs:documentation xml:lang="ru-ru">
-                Параметры справочника ограничений сумм платежей.
-              </xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
+          			<xs:element name="LimitsDirectoryOptions" type="AmountLimitsDirectoryOptions" minOccurs="0" form="qualified">
+            			<xs:annotation>
+              				<xs:documentation xml:lang="ru-ru">
+                				Параметры справочника ограничений сумм платежей.
+              				</xs:documentation>
+            			</xs:annotation>
+          			</xs:element>
+        		</xs:sequence>
 				<xs:attribute name="ServicesDetalization" type="ServicesDetalization" use="required">
 					<xs:annotation>
 						<xs:documentation xml:lang="ru-ru">

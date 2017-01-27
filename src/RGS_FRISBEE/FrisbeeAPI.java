@@ -39,7 +39,9 @@ public class FrisbeeAPI {
     private static void Init(){
         if(FBconn == null) {
             FBconn = new FBConnection();
-            FBconn.setTarget("SRV-FLEKASSIR2.erc-fl.ru", 3056, "https");
+            FBconn.setTarget("SRV-FLEKASSIR2.erc-fl.ru", 80, "http");
+            FBconn.setProxy("127.0.0.1", 8090, "http");
+//            FBconn.setProxy("10.95.5.19", 8090, "http");
             //FBconn.setProxy("10.95.17.46", 8080, "http");
 
         }

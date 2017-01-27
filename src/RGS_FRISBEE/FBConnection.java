@@ -20,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -92,11 +93,11 @@ public class FBConnection extends ConnectionInterfaceImp {
 
         if (p_objects.length > 0 ) {
 //new StringEntity(((String) p_objects[0]));
-            HttpEntity reqEntity = new BasicHttpEntity();
+            HttpEntity reqEntity = //new BasicHttpEntity();
 //                    EntityBuilder.create().setText((String) p_objects[0])
 //                    .setContentType(ContentType.create("text/xml", "utf-8"))
 //                    .build();
-                    new StringEntity((String) p_objects[0], ContentType.create("text/xml","utf-8"));//EntityBuilder.create()
+                    new StringEntity((String) p_objects[0], ContentType.create("text/xml", Charset.forName("utf-8")));//EntityBuilder.create()
 //                    .setStream(((Clob) p_objects[0]).getAsciiStream()).build();
                     //.setContentType(ContentType.TEXT_XML)
                     //.setText(((String) p_objects[0])).build();
