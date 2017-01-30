@@ -123,8 +123,8 @@
 
 	<xs:element name="Request" type="Request">
 		<xs:annotation>
-      <xs:documentation xml:lang="ru-ru">
-				Главный элемент любого запроса
+			<xs:documentation xml:lang="ru-ru">
+					Главный элемент любого запроса
 			</xs:documentation>
 			<xs:documentation xml:lang="en-us">
 				Main element of any request
@@ -2873,230 +2873,230 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="GetNextStateRequest">
-		<xs:annotation>
-			<xs:documentation xml:lang="ru-ru">
-				Запрос получения следующих параметров платежа.
-				Используется для проведения операций по услугам, имеющим ProcessPaymentType раным 1.
-				Алгоритм:
-				1. Пользователь выбирает услугу. Клиентское приложение вызывает GetNextStateRequest.
-				2. Сервер возвращает ответ GetNextStateResponse с набором параметров для ввода и набором возможных подтверждений.
-				3. Клиентское приложение предлагает клиенту ввести данные формы, после подтверждения ввода отправляет запрос GetNextStateRequest.
-				4. Сервер обрабатывает запрос и формирует ответ, как на шаге 2. Процесс повторяется до тех пор,
-				пока сервер не вернет ответ с фатальной ошибкой (0), либо с подтверждением успешного окончания сценария (3).
-				5. После получения ответа с успешным подтверждением сценария (3) клиентское приложение вызывает SendPaymentRequest.
-			</xs:documentation>
-			<xs:documentation xml:lang="en-us">
-				Request for receiving the next payment parameters
-			</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="Request">
-				<xs:sequence>
-					<xs:element name="PaymentParameters" type="Parameters" minOccurs="0" maxOccurs="1">
-						<xs:annotation>
-							<xs:documentation xml:lang="ru-ru">
-								Параметры платежа, собранные на предыдущем шаге, включая полученные из предыдущего ответа.
-								В первом запросе могут отсутствовать. В этом случае сервер вернет первое состояние для ввода параметров.
-								В случае, если клиентское приложение использовало справочные данные для построения интерфейса и
-								передало в первом запросе параметры на сервер, то сервер сразу вернет следующий шаг.
-							</xs:documentation>
-						</xs:annotation>
-					</xs:element>
-					<xs:element name="PersonalData" type="PersonalData" minOccurs="0" maxOccurs="1" form="qualified">
-						<xs:annotation>
-							<xs:documentation xml:lang="ru-ru">
-								Данные учетной записи личного кабинета, из под которого выполняется операция.
-								В случае, если операция выполняется не из личного кабинета, не отправляется ничего.
-							</xs:documentation>
-							<xs:documentation xml:lang="en-us">
-								Personal data for payment
-							</xs:documentation>
-						</xs:annotation>
-					</xs:element>
-					<xs:choice minOccurs="0" maxOccurs="1">
-						<xs:element name="ServiceId" form="qualified" type="xs:int" minOccurs="1" maxOccurs="1">
-							<xs:annotation>
-								<xs:documentation xml:lang="ru-ru">
-									Идентификатор услуги.
-								</xs:documentation>
-								<xs:documentation xml:lang="en-us">
-									Service identifier
-								</xs:documentation>
-							</xs:annotation>
-						</xs:element>
-						<xs:element name="TemplateId" form="qualified" type="xs:long" minOccurs="1" maxOccurs="1">
-							<xs:annotation>
-								<xs:documentation xml:lang="ru-ru">
-									Идентификатор шаблона.
-								</xs:documentation>
-								<xs:documentation xml:lang="en-us">
-									Template identifier
-								</xs:documentation>
-							</xs:annotation>
-						</xs:element>
-						<xs:element name="PaymentSerial" form="qualified" type="xs:long" minOccurs ="1" maxOccurs="1">
-							<xs:annotation>
-								<xs:documentation xml:lang="ru-ru">
-									Идентификатор платежа на стороне хаба.
-								</xs:documentation>
-								<xs:documentation xml:lang="en-us">
-									Payment identifier on hub side
-								</xs:documentation>
-							</xs:annotation>
-						</xs:element>
-						<xs:element name="PaymentId" form="qualified" type="GUID" minOccurs ="1" maxOccurs="1">
-							<xs:annotation>
-								<xs:documentation xml:lang="ru-ru">
-									Идентифкатор, сформированный точкой для атрибута Id запроса SendPaymentRequest в ранее выполненном платеже, параметры которого должны использоваться для текущего платежа. В этом случае GetNextStateResponse не будет требовать ввода тех параметров платежа, значения которых присутствуют в ранее выполненном платеже.
-								</xs:documentation>
-								<xs:documentation xml:lang="en-us">
-									Payment identifier on client side
-								</xs:documentation>
-							</xs:annotation>
-						</xs:element>
-						<xs:element name="Session" form="qualified" type="xs:string" minOccurs ="1" maxOccurs="1">
-							<xs:annotation>
-								<xs:documentation xml:lang="ru-ru">
-									Идентификатор сессии для продолжения оплаты.
-								</xs:documentation>
-								<xs:documentation xml:lang="en-us">
-									Session identifier to continue operation.
-								</xs:documentation>
-							</xs:annotation>
-						</xs:element>
-					</xs:choice>
-				</xs:sequence>
-				<xs:attribute name="ServiceSerial" type="xs:int" use="optional">
-					<xs:annotation>
-						<xs:documentation xml:lang="ru-ru">
-							Идентификатор услуги.
-							Устарел и более не используется. См. элемент ServiceId
-						</xs:documentation>
-						<xs:documentation xml:lang="en-us">
-							Service identifier
-							Obsolete. Use element ServiceId
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="State" type="xs:int" use="optional">
-					<xs:annotation>
-						<xs:documentation xml:lang="ru-ru">
-							УСТАРЕЛ И БОЛЕЕ НЕ ИСПОЛЬЗУЕТСЯ. Сервер должен игнорировать значение этого поля.
-							Номер текущего шага.
-						</xs:documentation>
-						<xs:documentation xml:lang="en-us">
-							OBSOLETE AND NO LONGER IN USE. Server should ignore this field value.
-							Current step number
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="Language" type="xs:language" use="optional">
-					<xs:annotation>
-						<xs:documentation xml:lang="ru-ru">
-							Устарел и оставлен для совместимости. Пeредается в http-header
-							Локаль клиента.
-						</xs:documentation>
-						<xs:documentation xml:lang="en-us">
-							Client locale
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="Confirmation" type="xs:string" use="optional" default="next">
-					<xs:annotation>
-						<xs:documentation xml:lang="ru-ru">
-							Результат подтверждения предыдушего состояния. По умолчанию имеет значение next - Далее.
-							При первом вызове отправляется значение start.
-							В случае, если в списке параметров есть поле с признаком необходимости обновления состояния при изменении,
-							то при изменении этого поля в поле Confirmation необходимо указать значение refresh
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="Session" type="xs:string" use="optional">
-					<xs:annotation>
-						<xs:documentation xml:lang="ru-ru">
-							Сессия, в рамках которой выполняется взаимодействие.
-							При первом запросе не отправляется.
-							При последующих запросах отправляется значение, полученное из ответа GetNextStateResponse.
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="GetNextStateResponse">
-		<xs:annotation>
-			<xs:documentation xml:lang="ru-ru">
-				Тип представляющий ответ на запрос получения следующих параметров платежа
-			</xs:documentation>
-			<xs:documentation xml:lang="en-us">
-				Type for representing the request for receiving the next payment parameters
-			</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="Response">
-				<xs:sequence>
-					<xs:element name="Result" type="GetNextStateResult" minOccurs="1" maxOccurs="1" form="qualified">
-						<xs:annotation>
-							<xs:documentation xml:lang="ru-ru">
-								Результат запроса
-							</xs:documentation>
-							<xs:documentation xml:lang="en-us">
-								Request result
-							</xs:documentation>
-						</xs:annotation>
-					</xs:element>
-					<xs:element name="NextStateInfo" type="StateInfo" minOccurs="0" maxOccurs="1" form="qualified">
-						<xs:annotation>
-							<xs:documentation xml:lang="ru-ru">
-								Информация о шаге ввода атрибутов.
-								Присутствует во всех случаях, за исключением фатальной ошибки (ResultCode == 0), когда продолжение сценария не имеет смысла.
-							</xs:documentation>
-							<xs:documentation xml:lang="en-us">
-								Information about the entering attributes step.
-								Exists is all cases excluding the fatal errors when continuing the scenario does not make sense.
-							</xs:documentation>
-						</xs:annotation>
-					</xs:element>
-					<xs:element name="PaymentParameterValues" type="Parameters" minOccurs="0" maxOccurs="1">
-						<xs:annotation>
-							<xs:documentation xml:lang="ru-ru">
-								Параметры платежа.
-								Возвращаются только для параметров, определенных в StateInfo.PaymentParameters.
-								Данные значения необходимо отправить для подтверждения в SendPaymentRequest.
-							</xs:documentation>
-							<xs:documentation xml:lang="en-us">
-								Payment parameters
-							</xs:documentation>
-						</xs:annotation>
-					</xs:element>
-				</xs:sequence>
-				<xs:attribute name="Session" type="xs:string" use="optional">
-					<xs:annotation>
-						<xs:documentation xml:lang="ru-ru">
-							Сессия, в рамках которой выполняется взаимодействие.
-							Возвращается в ответе сервера.
-							В случае наличия в ответе это значение должно быть отправлено на сервер в следущем запросе GetNextStateRequest.
-							Сессия должна быть отправлена в запросе SendPaymentRequest после завершения сценария.
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="ServiceId" type="xs:int" use="optional">
-					<xs:annotation>
-						<xs:documentation xml:lang="ru-ru">
-							Идентификатор услуги, в рамках которой выполняется сценарий.
-							Может измениться в процессе сценария.
-							Например, при оплате услуги "Сотовая связь" после определения оператора по номеру телефона
-							идентификатор услуги будет изменен на идентификатор услуги оплаты конкретного оператора.
-						</xs:documentation>
-						<xs:documentation xml:lang="en-us">
-							Service identifier
-						</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
+	<!--<xs:complexType name="GetNextStateRequest">-->
+		<!--<xs:annotation>-->
+			<!--<xs:documentation xml:lang="ru-ru">-->
+				<!--Запрос получения следующих параметров платежа.-->
+				<!--Используется для проведения операций по услугам, имеющим ProcessPaymentType раным 1.-->
+				<!--Алгоритм:-->
+				<!--1. Пользователь выбирает услугу. Клиентское приложение вызывает GetNextStateRequest.-->
+				<!--2. Сервер возвращает ответ GetNextStateResponse с набором параметров для ввода и набором возможных подтверждений.-->
+				<!--3. Клиентское приложение предлагает клиенту ввести данные формы, после подтверждения ввода отправляет запрос GetNextStateRequest.-->
+				<!--4. Сервер обрабатывает запрос и формирует ответ, как на шаге 2. Процесс повторяется до тех пор,-->
+				<!--пока сервер не вернет ответ с фатальной ошибкой (0), либо с подтверждением успешного окончания сценария (3).-->
+				<!--5. После получения ответа с успешным подтверждением сценария (3) клиентское приложение вызывает SendPaymentRequest.-->
+			<!--</xs:documentation>-->
+			<!--<xs:documentation xml:lang="en-us">-->
+				<!--Request for receiving the next payment parameters-->
+			<!--</xs:documentation>-->
+		<!--</xs:annotation>-->
+		<!--<xs:complexContent>-->
+			<!--<xs:extension base="Request">-->
+				<!--<xs:sequence>-->
+					<!--<xs:element name="PaymentParameters" type="Parameters" minOccurs="0" maxOccurs="1">-->
+						<!--<xs:annotation>-->
+							<!--<xs:documentation xml:lang="ru-ru">-->
+								<!--Параметры платежа, собранные на предыдущем шаге, включая полученные из предыдущего ответа.-->
+								<!--В первом запросе могут отсутствовать. В этом случае сервер вернет первое состояние для ввода параметров.-->
+								<!--В случае, если клиентское приложение использовало справочные данные для построения интерфейса и-->
+								<!--передало в первом запросе параметры на сервер, то сервер сразу вернет следующий шаг.-->
+							<!--</xs:documentation>-->
+						<!--</xs:annotation>-->
+					<!--</xs:element>-->
+					<!--<xs:element name="PersonalData" type="PersonalData" minOccurs="0" maxOccurs="1" form="qualified">-->
+						<!--<xs:annotation>-->
+							<!--<xs:documentation xml:lang="ru-ru">-->
+								<!--Данные учетной записи личного кабинета, из под которого выполняется операция.-->
+								<!--В случае, если операция выполняется не из личного кабинета, не отправляется ничего.-->
+							<!--</xs:documentation>-->
+							<!--<xs:documentation xml:lang="en-us">-->
+								<!--Personal data for payment-->
+							<!--</xs:documentation>-->
+						<!--</xs:annotation>-->
+					<!--</xs:element>-->
+					<!--<xs:choice minOccurs="0" maxOccurs="1">-->
+						<!--<xs:element name="ServiceId" form="qualified" type="xs:int" minOccurs="1" maxOccurs="1">-->
+							<!--<xs:annotation>-->
+								<!--<xs:documentation xml:lang="ru-ru">-->
+									<!--Идентификатор услуги.-->
+								<!--</xs:documentation>-->
+								<!--<xs:documentation xml:lang="en-us">-->
+									<!--Service identifier-->
+								<!--</xs:documentation>-->
+							<!--</xs:annotation>-->
+						<!--</xs:element>-->
+						<!--<xs:element name="TemplateId" form="qualified" type="xs:long" minOccurs="1" maxOccurs="1">-->
+							<!--<xs:annotation>-->
+								<!--<xs:documentation xml:lang="ru-ru">-->
+									<!--Идентификатор шаблона.-->
+								<!--</xs:documentation>-->
+								<!--<xs:documentation xml:lang="en-us">-->
+									<!--Template identifier-->
+								<!--</xs:documentation>-->
+							<!--</xs:annotation>-->
+						<!--</xs:element>-->
+						<!--<xs:element name="PaymentSerial" form="qualified" type="xs:long" minOccurs ="1" maxOccurs="1">-->
+							<!--<xs:annotation>-->
+								<!--<xs:documentation xml:lang="ru-ru">-->
+									<!--Идентификатор платежа на стороне хаба.-->
+								<!--</xs:documentation>-->
+								<!--<xs:documentation xml:lang="en-us">-->
+									<!--Payment identifier on hub side-->
+								<!--</xs:documentation>-->
+							<!--</xs:annotation>-->
+						<!--</xs:element>-->
+						<!--<xs:element name="PaymentId" form="qualified" type="GUID" minOccurs ="1" maxOccurs="1">-->
+							<!--<xs:annotation>-->
+								<!--<xs:documentation xml:lang="ru-ru">-->
+									<!--Идентифкатор, сформированный точкой для атрибута Id запроса SendPaymentRequest в ранее выполненном платеже, параметры которого должны использоваться для текущего платежа. В этом случае GetNextStateResponse не будет требовать ввода тех параметров платежа, значения которых присутствуют в ранее выполненном платеже.-->
+								<!--</xs:documentation>-->
+								<!--<xs:documentation xml:lang="en-us">-->
+									<!--Payment identifier on client side-->
+								<!--</xs:documentation>-->
+							<!--</xs:annotation>-->
+						<!--</xs:element>-->
+						<!--<xs:element name="Session" form="qualified" type="xs:string" minOccurs ="1" maxOccurs="1">-->
+							<!--<xs:annotation>-->
+								<!--<xs:documentation xml:lang="ru-ru">-->
+									<!--Идентификатор сессии для продолжения оплаты.-->
+								<!--</xs:documentation>-->
+								<!--<xs:documentation xml:lang="en-us">-->
+									<!--Session identifier to continue operation.-->
+								<!--</xs:documentation>-->
+							<!--</xs:annotation>-->
+						<!--</xs:element>-->
+					<!--</xs:choice>-->
+				<!--</xs:sequence>-->
+				<!--&lt;!&ndash;<xs:attribute name="ServiceSerial" type="xs:int" use="optional">&ndash;&gt;-->
+					<!--&lt;!&ndash;<xs:annotation>&ndash;&gt;-->
+						<!--&lt;!&ndash;<xs:documentation xml:lang="ru-ru">&ndash;&gt;-->
+							<!--&lt;!&ndash;Идентификатор услуги.&ndash;&gt;-->
+							<!--&lt;!&ndash;Устарел и более не используется. См. элемент ServiceId&ndash;&gt;-->
+						<!--&lt;!&ndash;</xs:documentation>&ndash;&gt;-->
+						<!--&lt;!&ndash;<xs:documentation xml:lang="en-us">&ndash;&gt;-->
+							<!--&lt;!&ndash;Service identifier&ndash;&gt;-->
+							<!--&lt;!&ndash;Obsolete. Use element ServiceId&ndash;&gt;-->
+						<!--&lt;!&ndash;</xs:documentation>&ndash;&gt;-->
+					<!--&lt;!&ndash;</xs:annotation>&ndash;&gt;-->
+				<!--&lt;!&ndash;</xs:attribute>&ndash;&gt;-->
+				<!--&lt;!&ndash;<xs:attribute name="State" type="xs:int" use="optional">&ndash;&gt;-->
+					<!--&lt;!&ndash;<xs:annotation>&ndash;&gt;-->
+						<!--&lt;!&ndash;<xs:documentation xml:lang="ru-ru">&ndash;&gt;-->
+							<!--&lt;!&ndash;УСТАРЕЛ И БОЛЕЕ НЕ ИСПОЛЬЗУЕТСЯ. Сервер должен игнорировать значение этого поля.&ndash;&gt;-->
+							<!--&lt;!&ndash;Номер текущего шага.&ndash;&gt;-->
+						<!--&lt;!&ndash;</xs:documentation>&ndash;&gt;-->
+						<!--&lt;!&ndash;<xs:documentation xml:lang="en-us">&ndash;&gt;-->
+							<!--&lt;!&ndash;OBSOLETE AND NO LONGER IN USE. Server should ignore this field value.&ndash;&gt;-->
+							<!--&lt;!&ndash;Current step number&ndash;&gt;-->
+						<!--&lt;!&ndash;</xs:documentation>&ndash;&gt;-->
+					<!--&lt;!&ndash;</xs:annotation>&ndash;&gt;-->
+				<!--&lt;!&ndash;</xs:attribute>&ndash;&gt;-->
+				<!--&lt;!&ndash;<xs:attribute name="Language" type="xs:language" use="optional">&ndash;&gt;-->
+					<!--&lt;!&ndash;<xs:annotation>&ndash;&gt;-->
+						<!--&lt;!&ndash;<xs:documentation xml:lang="ru-ru">&ndash;&gt;-->
+							<!--&lt;!&ndash;Устарел и оставлен для совместимости. Пeредается в http-header&ndash;&gt;-->
+							<!--&lt;!&ndash;Локаль клиента.&ndash;&gt;-->
+						<!--&lt;!&ndash;</xs:documentation>&ndash;&gt;-->
+						<!--&lt;!&ndash;<xs:documentation xml:lang="en-us">&ndash;&gt;-->
+							<!--&lt;!&ndash;Client locale&ndash;&gt;-->
+						<!--&lt;!&ndash;</xs:documentation>&ndash;&gt;-->
+					<!--&lt;!&ndash;</xs:annotation>&ndash;&gt;-->
+				<!--&lt;!&ndash;</xs:attribute>&ndash;&gt;-->
+				<!--<xs:attribute name="Confirmation" type="xs:string" use="optional" default="next">-->
+					<!--<xs:annotation>-->
+						<!--<xs:documentation xml:lang="ru-ru">-->
+							<!--Результат подтверждения предыдушего состояния. По умолчанию имеет значение next - Далее.-->
+							<!--При первом вызове отправляется значение start.-->
+							<!--В случае, если в списке параметров есть поле с признаком необходимости обновления состояния при изменении,-->
+							<!--то при изменении этого поля в поле Confirmation необходимо указать значение refresh-->
+						<!--</xs:documentation>-->
+					<!--</xs:annotation>-->
+				<!--</xs:attribute>-->
+				<!--<xs:attribute name="Session" type="xs:string" use="optional">-->
+					<!--<xs:annotation>-->
+						<!--<xs:documentation xml:lang="ru-ru">-->
+							<!--Сессия, в рамках которой выполняется взаимодействие.-->
+							<!--При первом запросе не отправляется.-->
+							<!--При последующих запросах отправляется значение, полученное из ответа GetNextStateResponse.-->
+						<!--</xs:documentation>-->
+					<!--</xs:annotation>-->
+				<!--</xs:attribute>-->
+			<!--</xs:extension>-->
+		<!--</xs:complexContent>-->
+	<!--</xs:complexType>-->
+	<!--<xs:complexType name="GetNextStateResponse">-->
+		<!--<xs:annotation>-->
+			<!--<xs:documentation xml:lang="ru-ru">-->
+				<!--Тип представляющий ответ на запрос получения следующих параметров платежа-->
+			<!--</xs:documentation>-->
+			<!--<xs:documentation xml:lang="en-us">-->
+				<!--Type for representing the request for receiving the next payment parameters-->
+			<!--</xs:documentation>-->
+		<!--</xs:annotation>-->
+		<!--<xs:complexContent>-->
+			<!--<xs:extension base="Response">-->
+				<!--<xs:sequence>-->
+					<!--<xs:element name="Result" type="GetNextStateResult" minOccurs="1" maxOccurs="1" form="qualified">-->
+						<!--<xs:annotation>-->
+							<!--<xs:documentation xml:lang="ru-ru">-->
+								<!--Результат запроса-->
+							<!--</xs:documentation>-->
+							<!--<xs:documentation xml:lang="en-us">-->
+								<!--Request result-->
+							<!--</xs:documentation>-->
+						<!--</xs:annotation>-->
+					<!--</xs:element>-->
+					<!--<xs:element name="NextStateInfo" type="StateInfo" minOccurs="0" maxOccurs="1" form="qualified">-->
+						<!--<xs:annotation>-->
+							<!--<xs:documentation xml:lang="ru-ru">-->
+								<!--Информация о шаге ввода атрибутов.-->
+								<!--Присутствует во всех случаях, за исключением фатальной ошибки (ResultCode == 0), когда продолжение сценария не имеет смысла.-->
+							<!--</xs:documentation>-->
+							<!--<xs:documentation xml:lang="en-us">-->
+								<!--Information about the entering attributes step.-->
+								<!--Exists is all cases excluding the fatal errors when continuing the scenario does not make sense.-->
+							<!--</xs:documentation>-->
+						<!--</xs:annotation>-->
+					<!--</xs:element>-->
+					<!--<xs:element name="PaymentParameterValues" type="Parameters" minOccurs="0" maxOccurs="1">-->
+						<!--<xs:annotation>-->
+							<!--<xs:documentation xml:lang="ru-ru">-->
+								<!--Параметры платежа.-->
+								<!--Возвращаются только для параметров, определенных в StateInfo.PaymentParameters.-->
+								<!--Данные значения необходимо отправить для подтверждения в SendPaymentRequest.-->
+							<!--</xs:documentation>-->
+							<!--<xs:documentation xml:lang="en-us">-->
+								<!--Payment parameters-->
+							<!--</xs:documentation>-->
+						<!--</xs:annotation>-->
+					<!--</xs:element>-->
+				<!--</xs:sequence>-->
+				<!--<xs:attribute name="Session" type="xs:string" use="optional">-->
+					<!--<xs:annotation>-->
+						<!--<xs:documentation xml:lang="ru-ru">-->
+							<!--Сессия, в рамках которой выполняется взаимодействие.-->
+							<!--Возвращается в ответе сервера.-->
+							<!--В случае наличия в ответе это значение должно быть отправлено на сервер в следущем запросе GetNextStateRequest.-->
+							<!--Сессия должна быть отправлена в запросе SendPaymentRequest после завершения сценария.-->
+						<!--</xs:documentation>-->
+					<!--</xs:annotation>-->
+				<!--</xs:attribute>-->
+				<!--<xs:attribute name="ServiceId" type="xs:int" use="optional">-->
+					<!--<xs:annotation>-->
+						<!--<xs:documentation xml:lang="ru-ru">-->
+							<!--Идентификатор услуги, в рамках которой выполняется сценарий.-->
+							<!--Может измениться в процессе сценария.-->
+							<!--Например, при оплате услуги "Сотовая связь" после определения оператора по номеру телефона-->
+							<!--идентификатор услуги будет изменен на идентификатор услуги оплаты конкретного оператора.-->
+						<!--</xs:documentation>-->
+						<!--<xs:documentation xml:lang="en-us">-->
+							<!--Service identifier-->
+						<!--</xs:documentation>-->
+					<!--</xs:annotation>-->
+				<!--</xs:attribute>-->
+			<!--</xs:extension>-->
+		<!--</xs:complexContent>-->
+	<!--</xs:complexType>-->
 
 	<xs:complexType name="CalculateCommissionRequest">
 		<xs:annotation>
@@ -6593,7 +6593,7 @@
 				</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="ServerTime" type="xs:dateTime " use="required">
+		<xs:attribute name="ServerTime" type="xs:dateTime" use="required">
 			<xs:annotation>
 				<xs:documentation xml:lang="ru-ru">
 					Время прихода платежа на сервер
