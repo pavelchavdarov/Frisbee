@@ -2,11 +2,16 @@ package RGS_FRISBEE;
 
 import RGS_COMMON_UTILS.ConnectionInterface;
 import RGS_COMMON_UTILS.String4CFT;
-import static RGS_COMMON_UTILS.oraDAO.CreateClob;
+import frisbee_datagram.*;
 
-import java.io.BufferedReader;
-import java.io.Reader;
+import javax.xml.bind.*;
+import java.io.*;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.sql.Clob;
+
+import static RGS_COMMON_UTILS.oraDAO.CreateClobStream;
+import static RGS_COMMON_UTILS.oraDAO.CreateClobString;
 
 
 
@@ -18,37 +23,18 @@ public class FrisbeeAPI {
 
     private static ConnectionInterface FBconn;
 
-//    private static Clob CreateClob(String source) throws Exception{
-//        //resStr= RGS_COMMON_UTILS.String4CFT.setPar(resStr,"state: ", source);
-//        //source = String.format("%-1000s", source);
-//
-//        char[] cbuf = source.toCharArray();
-//        System.err.println("creating clob...");
-//        System.err.println("source: " + source);
-//        oracle.jdbc.OracleConnection oraConn =
-////                (oracle.jdbc.OracleConnection)DriverManager.getConnection("jdbc:oracle:thin:@test03.msk.russb.org:1521:rbotest2","ibs","12ibs");
-//                (oracle.jdbc.OracleConnection)new OracleDriver().defaultConnection();
-//
-//        Clob result =  oracle.sql.CLOB.createTemporary(oraConn, true, oracle.sql.CLOB.DURATION_SESSION);
-//
-//        BufferedWriter bw = (BufferedWriter) result.setCharacterStream(1);
-//        bw.write(cbuf);
-//        bw.flush();
-//        return result;
-//    }
     private static void Init(){
         if(FBconn == null) {
             FBconn = new FBConnection();
             FBconn.setTarget("SRV-FLEKASSIR2.erc-fl.ru", 80, "http");
-            FBconn.setProxy("127.0.0.1", 8090, "http");
+//            FBconn.setProxy("127.0.0.1", 8090, "http");
 //            FBconn.setProxy("10.95.5.19", 8090, "http");
-//            FBconn.setProxy("10.95.17.46", 8080, "http");
+            FBconn.setProxy("10.95.17.46", 8080, "http");
 
         }
     }
 
-
-    public static Clob SendRequest(Clob request) throws Exception {
+    private static Clob SendRequest(Clob request) throws Exception {
         Clob clobResponse = null;
         char[] cbuf = new char[1];
         String strRequest = "";
@@ -65,31 +51,165 @@ public class FrisbeeAPI {
             else
                 strResponse = String.format("%-1000s", strResponse);
 
-            clobResponse = CreateClob(strResponse);
+            clobResponse = CreateClobString(strResponse);
         }
 
         return clobResponse;
     }
 
-    public static String SendRequest(String request){
-        String Response = "";
-//        String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-//                "<Request xmlns:xsi=\"http://www.w3.org/2001/XMLSchemainstance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xsi:type=\"GetDirectoryRequest\" S\n" +
-//                "ervicesDetalization=\"4\" IncludeRegions=\"true\" IncludeServiceTypes=\"true\" IncludeContrac\n" +
-//                "ts=\"true\" IncludeOperators=\"true\" IncludeCurrencies=\"true\" IncludeNominals=\"true\" xmlns\n" +
-//                "=\"http://ekassir.com/eKassir/PaySystem/Server/eKassirV3Protocol\" />";
-//        char[] cbuf = new char[1];
-//        String strRequest = "";
-//        String strResponse = "";
+    private static JAXBElement<Request> initServicesRequest(int detalization, boolean... includes){
+        ObjectFactory xml_factory = new ObjectFactory();
+        GetDirectoryRequest dir_req = xml_factory.createGetDirectoryRequest();
+        dir_req.setServicesDetalization(detalization);
+        int i = 0;
+        dir_req.setIncludeServiceTypes(includes[i++]);
+//        dir_req.setIncludeRegions(includes[i++]);
+//        dir_req.setIncludeContracts(includes[i++]);
+//        dir_req.setIncludeOperators(includes[i++]);
+//        dir_req.setIncludeCurrencies(includes[i++]);
+//        dir_req.setIncludeNominals(includes[i++]);
+
+        return xml_factory.createRequest(dir_req);
+    }
+
+
+    public static GetDirectoryResponse getDirectoryRequest(int servicesDetalization){
+        String xml = "";
+        GetDirectoryResponse dir_resp = null;
+        // inin request
+//        ObjectFactory xml_factory = new ObjectFactory();
+//        GetDirectoryRequest dir_req = xml_factory.createGetDirectoryRequest();
+//        dir_req.setServicesDetalization(servicesDetalization);
+//        dir_req.setIncludeRegions(true);
+//        dir_req.setIncludeServiceTypes(true);
+//        dir_req.setIncludeContracts(true);
+//        dir_req.setIncludeOperators(true);
+//        dir_req.setIncludeCurrencies(true);
+//        dir_req.setIncludeNominals(true);
+        JAXBElement<Request> req = initServicesRequest(servicesDetalization,false);//xml_factory.createRequest(dir_req);
+        // marshaling
+        try {
+            JAXBContext jc = JAXBContext.newInstance( "RGS_FRISBEE.frisbee_datagram" );
+            Marshaller m = jc.createMarshaller();
+            StringWriter writer = new StringWriter();
+            m.marshal(req, writer);
+            xml = writer.toString();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Request:");
+        System.out.println(xml);
+        // send request
+        InputStream respStream = null;
         try {
             Init();
-            Response = FBconn.POST_Request("/", request);
+            respStream = FBconn.POST_RequestStream("/", xml);
         }catch(Exception e){
-            Response = String4CFT.setPar(Response,"error", e.getMessage());
             e.printStackTrace();
         }
 
-        return Response;
+        // unmarshaling
+        try {
+            JAXBContext jc = JAXBContext.newInstance( "RGS_FRISBEE.frisbee_datagram" );
+            Unmarshaller unmarshaller = jc.createUnmarshaller();
+            JAXBElement<Response> elm = (JAXBElement<Response>) unmarshaller.unmarshal(respStream);
+            dir_resp = (GetDirectoryResponse)elm.getValue();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+//        dir_resp.getFullServices().getService().get(0).getParameters().getParameter().get(0).getClass()
+        return dir_resp;
+    }
+
+    public static void getDirectoryToFile(int servicesDetalization) {
+        String xml = "";
+        GetDirectoryResponse dir_resp = null;
+        // inin request
+//        ObjectFactory xml_factory = new ObjectFactory();
+//        GetDirectoryRequest dir_req = xml_factory.createGetDirectoryRequest();
+//        dir_req.setServicesDetalization(servicesDetalization);
+//        dir_req.setIncludeRegions(true);
+//        dir_req.setIncludeServiceTypes(true);
+//        dir_req.setIncludeContracts(true);
+//        dir_req.setIncludeOperators(true);
+//        dir_req.setIncludeCurrencies(true);
+//        dir_req.setIncludeNominals(true);
+        JAXBElement<Request> req = initServicesRequest(servicesDetalization,false);//xml_factory.createRequest(dir_req);
+        // marshaling
+        try {
+            JAXBContext jc = JAXBContext.newInstance( "RGS_FRISBEE.frisbee_datagram" );
+            Marshaller m = jc.createMarshaller();
+            StringWriter writer = new StringWriter();
+            m.marshal(req, writer);
+            xml = writer.toString();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Request:");
+        System.out.println(xml);
+        // send request
+        InputStream respStream = null;
+        try {
+            Init();
+            respStream = FBconn.POST_RequestStream("/", xml);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        ReadableByteChannel rbc =  Channels.newChannel(respStream);
+        try {
+            FileOutputStream fos = new FileOutputStream("directoryresponce.xml");
+            int filePosition = 0;
+            Long transferedBypes = fos.getChannel().transferFrom(rbc,filePosition, Long.MAX_VALUE);
+            while(transferedBypes == Long.MAX_VALUE){
+                filePosition += transferedBypes;
+                transferedBypes = fos.getChannel().transferFrom(rbc,filePosition, Long.MAX_VALUE);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static Clob getServices(int servicesDetalization) throws Exception {
+        Clob responce = null;
+        String xml ="";
+        GetDirectoryResponse dir_resp = null;
+        // inin request
+//        ObjectFactory xml_factory = new ObjectFactory();
+//        GetDirectoryRequest dir_req = xml_factory.createGetDirectoryRequest();
+//        dir_req.setServicesDetalization(servicesDetalization);
+//        dir_req.setIncludeRegions(true);
+//        dir_req.setIncludeServiceTypes(true);
+//        dir_req.setIncludeContracts(true);
+//        dir_req.setIncludeOperators(true);
+//        dir_req.setIncludeCurrencies(true);
+//        dir_req.setIncludeNominals(true);
+        JAXBElement<Request> req = initServicesRequest(servicesDetalization,false);//xml_factory.createRequest(dir_req);
+        // marshaling
+        try {
+            JAXBContext jc = JAXBContext.newInstance( "RGS_FRISBEE.frisbee_datagram" );
+            Marshaller m = jc.createMarshaller();
+            StringWriter writer = new StringWriter();
+            m.marshal(req, writer);
+            xml = writer.toString();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Request:");
+        System.out.println(xml);
+        // send request
+        InputStream respStream = null;
+        try {
+            Init();
+            respStream = FBconn.POST_RequestStream("/", xml);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return CreateClobStream(respStream);
     }
 
 }

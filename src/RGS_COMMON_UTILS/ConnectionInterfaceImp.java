@@ -13,6 +13,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -29,14 +30,15 @@ public class ConnectionInterfaceImp implements ConnectionInterface{
     protected String responceToString(CloseableHttpResponse response) throws IOException{
         String result = "";
         Header[] headers = response.getAllHeaders();
-        char[] cbuf = new char[1];
+        char[] cbuf = new char[10000];
         try{
             HttpEntity resEntity = response.getEntity();
             if (resEntity  != null){
                 InputStreamReader inStream = new InputStreamReader(resEntity.getContent(),"windows-1251");
                 BufferedReader br = new BufferedReader(inStream);
-                while(br.read(cbuf) != -1){
-                    result+=String.valueOf(cbuf);
+                int r = 0;
+                while((r=br.read(cbuf)) != -1){
+                    result+=String.valueOf(cbuf,0,r);
                 }
             }
         }finally{
@@ -70,6 +72,11 @@ public class ConnectionInterfaceImp implements ConnectionInterface{
     }
 
     @Override
+    public InputStream GET_RequestStream(String uri, Object... objects) throws IOException {
+        return null;
+    }
+
+    @Override
     public Blob GET_RequestDB(String uri, Object... objects) {
         return null;
     }
@@ -98,6 +105,11 @@ public class ConnectionInterfaceImp implements ConnectionInterface{
         }
 
         return result;
+    }
+
+    @Override
+    public InputStream POST_RequestStream(String uri, Object... objects) throws IOException {
+        return null;
     }
 
     @Override

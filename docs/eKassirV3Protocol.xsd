@@ -1815,14 +1815,14 @@
 							</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-          <xs:element name="AmountLimitsInfo" type="AmountLimitsInfo" minOccurs="0" maxOccurs="1" form="qualified">
-            <xs:annotation>
-              <xs:documentation xml:lang="ru-ru">
-                Список классов услуг
-              </xs:documentation>
-            </xs:annotation>
-          </xs:element>
-        </xs:sequence>
+                    <xs:element name="AmountLimitsInfo" type="AmountLimitsInfo" minOccurs="0" maxOccurs="1" form="qualified">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="ru-ru">
+                                Список классов услуг
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

@@ -35,7 +35,9 @@ public class FBConnection extends ConnectionInterfaceImp {
     public void initConnection() {
         this.httpClient = HttpClientBuilder.create().disableRedirectHandling().build();
 
-        System.setProperty ("javax.net.ssl.trustStore", "C:\\Program Files\\Java\\jdk1.6.0_43\\jre\\lib\\security\\cacerts");
+//        System.setProperty ("javax.net.ssl.trustStore", "C:\\Program Files\\Java\\jdk1.6.0_43\\jre\\lib\\security\\cacerts");
+        System.setProperty ("javax.net.ssl.trustStore", "/usr/oracle/ora_fio/test2/import/frisbee/cacerts");
+
         System.setProperty ("javax.net.ssl.trustStoreType", "jks");
         System.setProperty ("javax.net.ssl.trustStorePassword", "changeit");
     }
@@ -70,10 +72,7 @@ public class FBConnection extends ConnectionInterfaceImp {
         return result;
     }
 
-
-    public String POST_Request(String p_uri, Object... p_objects) throws IOException {
-        String result = "";
-        HttpPost request = new HttpPost(p_uri);
+    private HttpPost initRequest(HttpPost request){
         RequestConfig config;
         if(this.proxy != null)
             config = RequestConfig.custom().setProxy(this.proxy).build();
@@ -87,20 +86,36 @@ public class FBConnection extends ConnectionInterfaceImp {
 
         request.setHeader("eKassir-PointID", "2665");
         request.setHeader("eKassir-Password",
-                          "4QrcOUm6Wau+VuBX8g+IPg==");
+                "4QrcOUm6Wau+VuBX8g+IPg==");
+        return request;
+    }
 
 
+    public String POST_Request(String p_uri, Object... p_objects) throws IOException {
+        String result = "";
+        HttpPost request = new HttpPost(p_uri);
+        request = initRequest(request);
+//        RequestConfig config;
+//        if(this.proxy != null)
+//            config = RequestConfig.custom().setProxy(this.proxy).build();
+//        else
+//            config = RequestConfig.custom().build();
+//        request.setConfig(config);
+//
+//        request.setHeader("Content-Type", "text/xml");
+//        request.setHeader("charset", "utf-8");
+//        request.setHeader("eKassir-Version", "3");
+//
+//        request.setHeader("eKassir-PointID", "2665");
+//        request.setHeader("eKassir-Password",
+//                          "4QrcOUm6Wau+VuBX8g+IPg==");
 
         if (p_objects.length > 0 ) {
-//new StringEntity(((String) p_objects[0]));
-            HttpEntity reqEntity = //new BasicHttpEntity();
-//                    EntityBuilder.create().setText((String) p_objects[0])
-//                    .setContentType(ContentType.create("text/xml", "utf-8"))
-//                    .build();
-                    new StringEntity((String) p_objects[0], ContentType.create("text/xml", Charset.forName("utf-8")));//EntityBuilder.create()
-//                    .setStream(((Clob) p_objects[0]).getAsciiStream()).build();
-                    //.setContentType(ContentType.TEXT_XML)
-                    //.setText(((String) p_objects[0])).build();
+            HttpEntity reqEntity =
+                    EntityBuilder.create().setText((String) p_objects[0])
+                    .setContentType(ContentType.create("text/xml", Charset.forName("utf-8")))
+                    .build();
+                    //new StringEntity((String) p_objects[0], ContentType.create("text/xml", Charset.forName("utf-8")));//EntityBuilder.create()
 
             request.setEntity(reqEntity);
             CloseableHttpResponse responce = httpClient.execute(target, request);
@@ -108,6 +123,28 @@ public class FBConnection extends ConnectionInterfaceImp {
         }
 
         return result;
+    }
+
+    public InputStream POST_RequestStream(String p_uri, Object... p_objects) throws IOException {
+        HttpPost request = new HttpPost(p_uri);
+        request = initRequest(request);
+
+        if (p_objects.length > 0 ) {
+            HttpEntity reqEntity = EntityBuilder.create()
+                    .setText((String) p_objects[0])
+                    .setContentType(ContentType.create("text/xml", Charset.forName("utf-8")))
+                    .build();
+
+            request.setEntity(reqEntity);
+            CloseableHttpResponse responce = httpClient.execute(target, request);
+
+            return responce.getEntity().getContent();
+        }
+        else{
+            IOException ex = new IOException("Empty content for request entity!");
+            throw  ex;
+        }
+
     }
 
     public Clob POST_RequestDBClob(String p_uri, Object... p_objects) throws IOException, SQLException {

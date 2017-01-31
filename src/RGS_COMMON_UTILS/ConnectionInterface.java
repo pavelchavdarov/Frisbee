@@ -9,6 +9,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.HttpClient;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -21,8 +22,10 @@ import java.sql.SQLException;
 public interface ConnectionInterface {
 
   public String GET_Request(String uri, Object... objects) throws IOException;
+  public InputStream GET_RequestStream(String uri, Object... objects) throws IOException;
   public Blob GET_RequestDB(String uri, Object... objects);
   public String POST_Request(String uri, Object... objects) throws IOException;
+  public InputStream POST_RequestStream(String uri, Object... objects) throws IOException;
   public Blob POST_RequestDBBlob(String uri, String contentType, Object... objects) throws IOException, SQLException;
   public Blob POST_RequestDBBlob(String uri, Object... objects) throws IOException, SQLException;
   public Clob POST_RequestDBClob(String uri, String contentType, Object... objects) throws IOException, SQLException;
