@@ -1,4 +1,4 @@
-package RGS_COMMON_UTILS;
+package RGSCommonUtils;
 
 /**
  * Created by p.chavdarov on 20/01/2017.

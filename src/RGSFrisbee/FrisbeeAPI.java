@@ -1,17 +1,21 @@
-package RGS_FRISBEE;
+package RGSFrisbee;
 
-import RGS_COMMON_UTILS.ConnectionInterface;
-import RGS_COMMON_UTILS.String4CFT;
-import frisbee_datagram.*;
+import FrisbeeDatagram.*;
+import RGSCommonUtils.ConnectionInterface;
+import RGSCommonUtils.String4CFT;
 
 import javax.xml.bind.*;
 import java.io.*;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.sql.Clob;
 
-import static RGS_COMMON_UTILS.oraDAO.CreateClobStream;
-import static RGS_COMMON_UTILS.oraDAO.CreateClobString;
+import static RGSCommonUtils.oraDAO.CreateClobStream;
+import static RGSCommonUtils.oraDAO.CreateClobString;
 
 
 
@@ -23,14 +27,19 @@ public class FrisbeeAPI {
 
     private static ConnectionInterface FBconn;
 
-    private static void Init(){
+    private static void Init() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException {
         if(FBconn == null) {
             FBconn = new FBConnection();
-            FBconn.setTarget("SRV-FLEKASSIR2.erc-fl.ru", 80, "http");
+            FBconn.setTarget("SRV-FLEKASSIR2.erc-fl.ru", 3056, "https");
 //            FBconn.setProxy("127.0.0.1", 8090, "http");
 //            FBconn.setProxy("10.95.5.19", 8090, "http");
-            FBconn.setProxy("10.95.17.46", 8080, "http");
+//            FBconn.setProxy("10.95.17.46", 8080, "http");
+            FBconn.initConnection("/RGSFrisbee/cacerts","changeit");
+//            System.setProperty ("javax.net.ssl.trustStore", "D:/WORK/p.chavdarov/work/MHR/01.17/MHR-5842(Frisbee)/certs/cacerts");
+//            System.setProperty ("javax.net.ssl.trustStore", "/usr/oracle/ora_fio/test2/import/frisbee/cacerts");
 
+//            System.setProperty ("javax.net.ssl.trustStoreType", "jks");
+//            System.setProperty ("javax.net.ssl.trustStorePassword", "changeit");
         }
     }
 
@@ -89,7 +98,7 @@ public class FrisbeeAPI {
         JAXBElement<Request> req = initServicesRequest(servicesDetalization,false);//xml_factory.createRequest(dir_req);
         // marshaling
         try {
-            JAXBContext jc = JAXBContext.newInstance( "RGS_FRISBEE.frisbee_datagram" );
+            JAXBContext jc = JAXBContext.newInstance( "frisbee_datagram" );
             Marshaller m = jc.createMarshaller();
             StringWriter writer = new StringWriter();
             m.marshal(req, writer);
@@ -110,7 +119,7 @@ public class FrisbeeAPI {
 
         // unmarshaling
         try {
-            JAXBContext jc = JAXBContext.newInstance( "RGS_FRISBEE.frisbee_datagram" );
+            JAXBContext jc = JAXBContext.newInstance( "frisbee_datagram" );
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             JAXBElement<Response> elm = (JAXBElement<Response>) unmarshaller.unmarshal(respStream);
             dir_resp = (GetDirectoryResponse)elm.getValue();
@@ -137,7 +146,7 @@ public class FrisbeeAPI {
         JAXBElement<Request> req = initServicesRequest(servicesDetalization,false);//xml_factory.createRequest(dir_req);
         // marshaling
         try {
-            JAXBContext jc = JAXBContext.newInstance( "RGS_FRISBEE.frisbee_datagram" );
+            JAXBContext jc = JAXBContext.newInstance( "FrisbeeDatagram" );
             Marshaller m = jc.createMarshaller();
             StringWriter writer = new StringWriter();
             m.marshal(req, writer);
@@ -190,7 +199,7 @@ public class FrisbeeAPI {
         JAXBElement<Request> req = initServicesRequest(servicesDetalization,false);//xml_factory.createRequest(dir_req);
         // marshaling
         try {
-            JAXBContext jc = JAXBContext.newInstance( "RGS_FRISBEE.frisbee_datagram" );
+            JAXBContext jc = JAXBContext.newInstance( "frisbee_datagram" );
             Marshaller m = jc.createMarshaller();
             StringWriter writer = new StringWriter();
             m.marshal(req, writer);

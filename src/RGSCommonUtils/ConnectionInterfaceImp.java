@@ -1,4 +1,4 @@
-package RGS_COMMON_UTILS;
+package RGSCommonUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -15,6 +15,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
@@ -113,17 +117,7 @@ public class ConnectionInterfaceImp implements ConnectionInterface{
     }
 
     @Override
-    public Blob POST_RequestDBBlob(String uri, String contentType, Object... objects) {
-        return null;
-    }
-
-    @Override
     public Blob POST_RequestDBBlob(String uri, Object... objects) throws IOException, SQLException {
-        return null;
-    }
-
-    @Override
-    public Clob POST_RequestDBClob(String uri, String contentType, Object... objects) throws IOException, SQLException {
         return null;
     }
 
@@ -145,6 +139,11 @@ public class ConnectionInterfaceImp implements ConnectionInterface{
     @Override
     public void initConnection() {
         this.httpClient = HttpClientBuilder.create().disableRedirectHandling().build();
+    }
+
+    @Override
+    public void initConnection(String trustStore, String password) throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, KeyManagementException {
+
     }
 
     @Override

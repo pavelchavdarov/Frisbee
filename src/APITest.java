@@ -1,14 +1,5 @@
-import RGS_FRISBEE.FrisbeeAPI;
-import RGS_FRISBEE.frisbee_datagram.GetDirectoryRequest;
-import RGS_FRISBEE.frisbee_datagram.ObjectFactory;
-import RGS_FRISBEE.frisbee_datagram.Request;
-import com.sun.xml.internal.bind.v2.runtime.MarshallerImpl;
+import RGSFrisbee.FrisbeeAPI;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.StringWriter;
 
 /**
  * Created by Павел on 26.01.2017.
@@ -31,7 +22,7 @@ public class APITest {
 //        JAXBElement<Request> req = xml_factory.createRequest(dir_req);
 //
 //        try {
-//            JAXBContext jc = JAXBContext.newInstance( "RGS_FRISBEE.frisbee_datagram" );
+//            JAXBContext jc = JAXBContext.newInstance( "RGSFrisbee.frisbee_datagram" );
 //            Marshaller m = jc.createMarshaller();
 //            StringWriter writer = new StringWriter();
 //            m.marshal(req, writer);

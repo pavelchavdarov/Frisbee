@@ -1,4 +1,4 @@
-package RGS_COMMON_UTILS;
+package RGSCommonUtils;
 
 import java.util.HashMap;
 

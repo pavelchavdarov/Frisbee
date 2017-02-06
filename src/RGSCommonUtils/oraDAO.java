@@ -1,12 +1,9 @@
-package RGS_COMMON_UTILS;
+package RGSCommonUtils;
 
 import oracle.jdbc.OracleDriver;
-import sun.nio.ch.ChannelInputStream;
 
 import java.io.*;
 import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
 import java.sql.Blob;
 import java.sql.Clob;
 
@@ -15,7 +12,7 @@ import java.sql.Clob;
  */
 public class oraDAO {
     public static Clob CreateClobString(String source) throws Exception{
-        //resStr= RGS_COMMON_UTILS.String4CFT.setPar(resStr,"state: ", source);
+        //resStr= RGSCommonUtils.String4CFT.setPar(resStr,"state: ", source);
         //source = String.format("%-1000s", source);
 
         char[] cbuf = source.toCharArray();
@@ -34,6 +31,9 @@ public class oraDAO {
     }
 
     public static Clob CreateClobStream(InputStream inStream) throws Exception{
+        if (inStream == null)
+            return null;
+
         char[] cbuff = new char[1024];
         System.err.println("creating clob from InputStream...");
         oracle.jdbc.OracleConnection oraConn =
@@ -51,7 +51,7 @@ public class oraDAO {
     }
 
     public static Blob CreateBlob(String source) throws Exception{
-        //resStr= RGS_COMMON_UTILS.String4CFT.setPar(resStr,"state: ", source);
+        //resStr= RGSCommonUtils.String4CFT.setPar(resStr,"state: ", source);
         //source = String.format("%-1000s", source);
         System.err.println("creating blob...");
         System.err.println("source: " + source);

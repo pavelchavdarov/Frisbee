@@ -1,27 +1,17 @@
-package RGS_FRISBEE;
+package RGSFrisbee;
 
-import RGS_COMMON_UTILS.ConnectionInterface;
-import RGS_COMMON_UTILS.ConnectionInterfaceImp;
+import RGSCommonUtils.ConnectionInterfaceImpSLLWithTrustStore;
 import oracle.jdbc.OracleDriver;
-import oracle.sql.CLOB;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 
-import javax.net.ssl.*;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
 import java.nio.charset.Charset;
-import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
 
@@ -30,16 +20,12 @@ import java.sql.SQLException;
  */
 
 
-public class FBConnection extends ConnectionInterfaceImp {
+public class FBConnection extends ConnectionInterfaceImpSLLWithTrustStore {
 
     public void initConnection() {
         this.httpClient = HttpClientBuilder.create().disableRedirectHandling().build();
 
-//        System.setProperty ("javax.net.ssl.trustStore", "C:\\Program Files\\Java\\jdk1.6.0_43\\jre\\lib\\security\\cacerts");
-        System.setProperty ("javax.net.ssl.trustStore", "/usr/oracle/ora_fio/test2/import/frisbee/cacerts");
 
-        System.setProperty ("javax.net.ssl.trustStoreType", "jks");
-        System.setProperty ("javax.net.ssl.trustStorePassword", "changeit");
     }
 
     public FBConnection() {
