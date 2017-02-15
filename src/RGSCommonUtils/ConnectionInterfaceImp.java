@@ -138,7 +138,7 @@ public class ConnectionInterfaceImp implements ConnectionInterface{
 
     @Override
     public void initConnection() {
-        this.httpClient = HttpClientBuilder.create().disableRedirectHandling().build();
+        this.httpClient = HttpClientBuilder.create().build();
     }
 
     @Override

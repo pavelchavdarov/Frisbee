@@ -1,4 +1,7 @@
 import RGSFrisbee.FrisbeeAPI;
+import org.apache.commons.codec.binary.Hex;
+
+import java.io.IOException;
 
 
 /**
@@ -22,7 +25,7 @@ public class APITest {
 //        JAXBElement<Request> req = xml_factory.createRequest(dir_req);
 //
 //        try {
-//            JAXBContext jc = JAXBContext.newInstance( "RGSFrisbee.frisbee_datagram" );
+//            JAXBContext jc = JAXBContext.newInstance( "RGSFrisbee.FrisbeeDatagram" );
 //            Marshaller m = jc.createMarshaller();
 //            StringWriter writer = new StringWriter();
 //            m.marshal(req, writer);
@@ -41,6 +44,28 @@ public class APITest {
 //        System.out.println(FrisbeeAPI.SendRequest(xml));
 
 //        FrisbeeAPI.getDirectoryRequest(4);
-        FrisbeeAPI.getDirectoryToFile(4);
+//        FrisbeeAPI.getServicesToFile(4);
+        try {
+            FrisbeeAPI.execRequestStr("<?xml version=\"1.0\" encoding=\"windows-1251\"?>\n" +
+                    "         <Request xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://ekassir.com/eKassir/PaySystem/Server/eKassirV3Protocol\" xsi:type=\"RegisterCheckRequest\" Id=\"52475342-10-02-17-085100\" Service=\"4\">\n" +
+                    "           <PaymentParameters>\n" +
+                    "             <Parameter Name=\"NAME\" Value=\"VALUE\"/>\n" +
+                    "           </PaymentParameters>\n" +
+                    "         </Request>");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        String foo = "07-01-2017";
+//        byte[] bytes = foo.getBytes();
+//        System.out.println( Hex.encodeHexString( bytes ) );
+//        System.out.println( String.format("%s-%s-%s-%s-%s",
+//                                            Hex.encodeHexString("2665".getBytes()),
+//                                            Hex.encodeHexString("07".getBytes()),
+//                                            Hex.encodeHexString("02".getBytes()),
+//                                            Hex.encodeHexString("17".getBytes()),
+//                                            Hex.encodeHexString("130115".getBytes())
+//                                        )
+//        );
+
     }
 }

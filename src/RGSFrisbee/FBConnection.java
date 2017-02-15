@@ -1,62 +1,55 @@
 package RGSFrisbee;
 
 import RGSCommonUtils.ConnectionInterfaceImpSLLWithTrustStore;
-import oracle.jdbc.OracleDriver;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.sql.Clob;
 import java.sql.SQLException;
 
-/**
- * Created by p.chavdarov on 18/01/2017.
- */
+import static RGSCommonUtils.oraDAO.Stream2Clob;
 
 
 public class FBConnection extends ConnectionInterfaceImpSLLWithTrustStore {
 
-    public void initConnection() {
-        this.httpClient = HttpClientBuilder.create().disableRedirectHandling().build();
-
-
-    }
+//    public void initConnection() {
+//        this.httpClient = HttpClientBuilder.create().build();
+//    }
 
     public FBConnection() {
-        initConnection();
     }
 
-    private Clob responceToClob(CloseableHttpResponse response) throws IOException, SQLException  {
-        char[] cbuf = new char[1];
-        oracle.jdbc.OracleConnection oraConn =
-//                (oracle.jdbc.OracleConnection)DriverManager.getConnection("jdbc:oracle:thin:@test03.msk.russb.org:1521:rbotest2","ibs","12ibs");
-                (oracle.jdbc.OracleConnection)new OracleDriver().defaultConnection();
-
-        Clob result =  oracle.sql.CLOB.createTemporary(oraConn, true, oracle.sql.CLOB.DURATION_SESSION);
-        Writer wrc = result.setCharacterStream(1);
-        try{
-            HttpEntity resEntity = response.getEntity();
-            if (resEntity  != null){
-                InputStreamReader inStream = new InputStreamReader(resEntity.getContent());
-                BufferedReader br = new BufferedReader(inStream);
-                while(br.read(cbuf) != -1){
-                    wrc.write(cbuf);
-                }
-                wrc.flush();
-            }
-        }finally{
-            response.close();
-            wrc.close();
-        }
-
-        return result;
-    }
+//    private Clob responceToClob(CloseableHttpResponse response) throws IOException, SQLException  {
+//        char[] cbuf = new char[1];
+//        oracle.jdbc.OracleConnection oraConn =
+////                (oracle.jdbc.OracleConnection)DriverManager.getConnection("jdbc:oracle:thin:@test03.msk.russb.org:1521:rbotest2","ibs","12ibs");
+//                (oracle.jdbc.OracleConnection)new OracleDriver().defaultConnection();
+//
+//        Clob result =  oracle.sql.CLOB.createTemporary(oraConn, true, oracle.sql.CLOB.DURATION_SESSION);
+//        Writer wrc = result.setCharacterStream(1);
+//        try{
+//            HttpEntity resEntity = response.getEntity();
+//            if (resEntity  != null){
+//                InputStreamReader inStream = new InputStreamReader(resEntity.getContent());
+//                BufferedReader br = new BufferedReader(inStream);
+//                while(br.read(cbuf) != -1){
+//                    wrc.write(cbuf);
+//                }
+//                wrc.flush();
+//            }
+//        }finally{
+//            response.close();
+//            wrc.close();
+//        }
+//
+//        return result;
+//    }
 
     private HttpPost initRequest(HttpPost request){
         RequestConfig config;
@@ -127,41 +120,27 @@ public class FBConnection extends ConnectionInterfaceImpSLLWithTrustStore {
             return responce.getEntity().getContent();
         }
         else{
-            IOException ex = new IOException("Empty content for request entity!");
-            throw  ex;
+            throw new IOException("Empty content for request entity!");
         }
 
     }
 
+    @Override
     public Clob POST_RequestDBClob(String p_uri, Object... p_objects) throws IOException, SQLException {
         Clob result = null;
         HttpPost request = new HttpPost(p_uri);
-        RequestConfig config;
-        if(this.proxy != null)
-            config = RequestConfig.custom().setProxy(this.proxy).build();
-        else
-            config = RequestConfig.custom().build();
-        request.setConfig(config);
-
-        request.setHeader("Content-Type", " text/xml");
-        request.setHeader("charset", "utf-8");
-        request.setHeader("eKassir-Version", "3");
-
-        request.setHeader("eKassir-PointID", "2665");
-        request.setHeader("eKassir-Password",
-                "4QrcOUm6Wau+VuBX8g+IPg==");
-
-
+        request = initRequest(request);
 
         if (p_objects.length > 0 ) {
 
             HttpEntity reqEntity = EntityBuilder.create()
-                    .setStream(((Clob) p_objects[0]).getAsciiStream()).build();
-//                    .setText(((String) p_objects[0])).build();
+                    .setText((String) p_objects[0])
+                    .setContentType(ContentType.create("text/xml", Charset.forName("utf-8")))
+                    .build();
 
             request.setEntity(reqEntity);
             CloseableHttpResponse responce = httpClient.execute(target, request);
-            result = responceToClob(responce);
+            result = Stream2Clob(responce.getEntity().getContent());
         }
 
         return result;
