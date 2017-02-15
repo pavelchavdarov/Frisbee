@@ -75,10 +75,7 @@ public class FBConnection extends ConnectionInterfaceImpSLLWithTrustStore {
             MessageDigest crypt = MessageDigest.getInstance("MD5");
             crypt.reset();
             crypt.update(password.getBytes("UTF-8"));
-            //crypt.digest();
-//            password = new BigInteger(1, crypt.digest()).toString();
-            password = new String(crypt.digest());
-            password = Base64.encodeBase64String(password.getBytes());
+            password = Base64.encodeBase64String(crypt.digest());
             System.out.println("password: " + password);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
