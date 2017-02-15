@@ -1,6 +1,7 @@
 package RGSFrisbee;
 
 import RGSCommonUtils.ConnectionInterfaceImpSLLWithTrustStore;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.EntityBuilder;
@@ -9,7 +10,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Clob;
 import java.sql.SQLException;
 
@@ -52,6 +56,9 @@ public class FBConnection extends ConnectionInterfaceImpSLLWithTrustStore {
 //    }
 
     private HttpPost initRequest(HttpPost request){
+        String poitId = "2665";
+        String password = "123456";
+
         RequestConfig config;
         if(this.proxy != null)
             config = RequestConfig.custom().setProxy(this.proxy).build();
@@ -63,9 +70,26 @@ public class FBConnection extends ConnectionInterfaceImpSLLWithTrustStore {
         request.setHeader("charset", "utf-8");
         request.setHeader("eKassir-Version", "3");
 
-        request.setHeader("eKassir-PointID", "2665");
+
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("MD5");
+            crypt.reset();
+            crypt.update(password.getBytes("UTF-8"));
+            //crypt.digest();
+//            password = new BigInteger(1, crypt.digest()).toString();
+            password = new String(crypt.digest());
+            password = Base64.encodeBase64String(password.getBytes());
+            System.out.println("password: " + password);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        request.setHeader("eKassir-PointID", poitId);
         request.setHeader("eKassir-Password",
-                "4QrcOUm6Wau+VuBX8g+IPg==");
+                password);
+                //"4QrcOUm6Wau+VuBX8g+IPg==");
         return request;
     }
 

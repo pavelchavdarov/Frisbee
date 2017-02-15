@@ -44,17 +44,17 @@ public class APITest {
 //        System.out.println(FrisbeeAPI.SendRequest(xml));
 
 //        FrisbeeAPI.getDirectoryRequest(4);
-//        FrisbeeAPI.getServicesToFile(4);
-        try {
-            FrisbeeAPI.execRequestStr("<?xml version=\"1.0\" encoding=\"windows-1251\"?>\n" +
-                    "         <Request xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://ekassir.com/eKassir/PaySystem/Server/eKassirV3Protocol\" xsi:type=\"RegisterCheckRequest\" Id=\"52475342-10-02-17-085100\" Service=\"4\">\n" +
-                    "           <PaymentParameters>\n" +
-                    "             <Parameter Name=\"NAME\" Value=\"VALUE\"/>\n" +
-                    "           </PaymentParameters>\n" +
-                    "         </Request>");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        FrisbeeAPI.getServicesToFile(4);
+//        try {
+//            FrisbeeAPI.execRequestStr("<?xml version=\"1.0\" encoding=\"windows-1251\"?>\n" +
+//                    "         <Request xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://ekassir.com/eKassir/PaySystem/Server/eKassirV3Protocol\" xsi:type=\"RegisterCheckRequest\" Id=\"52475342-10-02-17-085100\" Service=\"4\">\n" +
+//                    "           <PaymentParameters>\n" +
+//                    "             <Parameter Name=\"NAME\" Value=\"VALUE\"/>\n" +
+//                    "           </PaymentParameters>\n" +
+//                    "         </Request>");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 //        String foo = "07-01-2017";
 //        byte[] bytes = foo.getBytes();
 //        System.out.println( Hex.encodeHexString( bytes ) );
